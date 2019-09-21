@@ -17,6 +17,7 @@ interface ExchangeInterface {
     event SetMainStatus(bool mainStatus);
     event CreateOrederERC20(uint price, uint amount, uint tokenId, uint expireDate);
     event FillOrederERC20(uint orederId, address buyer);
+    event CancelOrederERC20(uint orederId);
 }
 
 
@@ -34,6 +35,7 @@ contract Exchange is ExchangeInterface, Roles {
         uint amount;
         uint tokenId;
         uint expireDate;
+        bool status;
     }
 
     mapping (uint => ERC20Interface) public ERC20tokens;
@@ -58,8 +60,15 @@ contract Exchange is ExchangeInterface, Roles {
     }
 
     modifier fillOrder(uint orderId) {
+        require(ordersERC20[orderId].status, "Wrong order status.");
         require(ordersERC20[orderId].price == msg.value, "Not enought funds.");
         require(ordersERC20[orderId].expireDate > now, "Order is expired.");
+        _;
+    }
+
+    modifier cancelOrder(uint orderId) {
+        require(ordersERC20[orderId].status, "Wrong order status.");
+        require(ordersERC20[orderId].owner == msg.sender, "Not enought funds.");
         _;
     }
 
@@ -81,6 +90,7 @@ contract Exchange is ExchangeInterface, Roles {
         order.amount     = amount;
         order.tokenId    = tokenId;
         order.expireDate = expireDate;
+        order.status     = true;
 
         ordersERC20[index] = order;
         ordersCountERC20++;
@@ -93,9 +103,22 @@ contract Exchange is ExchangeInterface, Roles {
      * @param orderId uint The order id
      */
     function fillOrederERC20(uint orderId) external payable isActive fillOrder(orderId) returns(bool) {
+        ordersERC20[orderId].status = false;
         ordersERC20[orderId].owner.transfer(msg.value);
         ERC20tokens[ordersERC20[orderId].tokenId].transfer(msg.sender, ordersERC20[orderId].amount);
+
         emit FillOrederERC20(orderId, msg.sender);
+        return true;
+    }
+
+    /**
+     * @dev Cancel ERC20 oreder.
+     * @param orderId uint The order id
+     */
+    function cancelOrederERC20(uint orderId) external isActive cancelOrder(orderId) returns(bool) {
+        ordersERC20[orderId].status = false;
+        ERC20tokens[ordersERC20[orderId].tokenId].transfer(ordersERC20[orderId].owner, ordersERC20[orderId].amount);
+        emit CancelOrederERC20(orderId);
         return true;
     }
 
