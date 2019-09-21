@@ -9,16 +9,11 @@ function callContract() {
     })
 }
 
-$(document).ready(function() {
+$(document).ready(async () => {
 
-    ethereum.enable()
-    .then(function (accounts) {
-        console.log({ accounts })
-        
-        callContract()
-    })
-    .catch(function (error) {
-        console.error(error)
-    })
+    await ethereum.enable()
+
+    console.log(web3.eth.accounts)
+    callContract()
 });
 
