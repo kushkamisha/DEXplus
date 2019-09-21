@@ -14,6 +14,7 @@ interface ExchangeInterface {
     function fillOrederERC20(uint orderId) external payable returns(bool);
     function fillOrederERC721(uint orderId) external payable returns(bool);
     function cancelOrederERC20(uint orderId) external returns(bool);
+    function cancelOrederERC721(uint orderId) external returns(bool);
 
     event SetERC20Token(uint index, address token);
     event SetERC721Token(uint index, address token);    
@@ -23,6 +24,7 @@ interface ExchangeInterface {
     event FillOrederERC20(uint orederId, address buyer);
     event FillOrederERC721(uint orederId, address buyer);
     event CancelOrederERC20(uint orederId);
+    event CancelOrederERC721(uint orederId);
 }
 
 
@@ -116,9 +118,15 @@ contract Exchange is ExchangeInterface, Roles {
         _;
     }
 
-    modifier cancelOrder(uint orderId) {
+    modifier cancelOrderERC20(uint orderId) {
         require(ordersERC20[orderId].status, "Wrong order status.");
         require(ordersERC20[orderId].owner == msg.sender, "Not enought funds.");
+        _;
+    }
+
+    modifier cancelOrderERC721(uint orderId) {
+        require(ordersERC721[orderId].status, "Wrong order status.");
+        require(ordersERC721[orderId].owner == msg.sender, "Not enought funds.");
         _;
     }
 
@@ -205,10 +213,21 @@ contract Exchange is ExchangeInterface, Roles {
      * @dev Cancel ERC20 oreder.
      * @param orderId uint The order id
      */
-    function cancelOrederERC20(uint orderId) external isActive cancelOrder(orderId) returns(bool) {
+    function cancelOrederERC20(uint orderId) external isActive cancelOrderERC20(orderId) returns(bool) {
         ordersERC20[orderId].status = false;
         ERC20tokens[ordersERC20[orderId].tokenId].transfer(ordersERC20[orderId].owner, ordersERC20[orderId].amount);
         emit CancelOrederERC20(orderId);
+        return true;
+    }
+
+    /**
+     * @dev Cancel ERC721 oreder.
+     * @param orderId uint The order id
+     */
+    function cancelOrederERC721(uint orderId) external isActive cancelOrderERC721(orderId) returns(bool) {
+        ordersERC721[orderId].status = false;
+        ERC721tokens[ordersERC721[orderId].tokenId].transferFrom(address(this), ordersERC721[orderId].owner, ordersERC721[orderId].index);
+        emit CancelOrederERC721(orderId);
         return true;
     }
 
