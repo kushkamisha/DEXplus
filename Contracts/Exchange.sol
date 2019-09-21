@@ -11,10 +11,12 @@ interface ExchangeInterface {
     function setERC20Token(uint index, address token) external;
     function setMainStatus(bool status) external;
     function createOrederERC20(uint price, uint amount, uint tokenId, uint expireDate) external returns(uint index);
+    function fillOrederERC20(uint orderId) external payable returns(bool);
 
     event SetERC20Token(uint index, address token);
     event SetMainStatus(bool mainStatus);
     event CreateOrederERC20(uint price, uint amount, uint tokenId, uint expireDate);
+    event FillOrederERC20(uint orederId, address buyer);
 }
 
 
@@ -27,6 +29,7 @@ contract Exchange is ExchangeInterface, Roles {
     bool public mainStatus;
 
     struct OrderERC20 {
+        address payable owner;
         uint price;
         uint amount;
         uint tokenId;
@@ -48,9 +51,15 @@ contract Exchange is ExchangeInterface, Roles {
         _;
     }
 
-    modifier checkOrder(uint amount, uint tokenId, uint expireDate) {
+    modifier createOrder(uint amount, uint tokenId, uint expireDate) {
         require(ERC20tokens[tokenId].allowance(msg.sender, address(this)) >= amount, "Not enought allowance.");
         require(expireDate > now, "Wrong expire date.");
+        _;
+    }
+
+    modifier fillOrder(uint orderId) {
+        require(ordersERC20[orderId].price == msg.value, "Not enought funds.");
+        require(ordersERC20[orderId].expireDate > now, "Order is expired.");
         _;
     }
 
@@ -61,12 +70,13 @@ contract Exchange is ExchangeInterface, Roles {
      * @param tokenId uint The token id
      * @param expireDate uint The expire date in timestamp
      */
-    function createOrederERC20(uint price, uint amount, uint tokenId, uint expireDate) isActive checkOrder(amount, tokenId, expireDate) external returns(uint index) {
+    function createOrederERC20(uint price, uint amount, uint tokenId, uint expireDate) external isActive createOrder(amount, tokenId, expireDate) returns(uint index) {
         ERC20tokens[tokenId].transferFrom(msg.sender, address(this), amount);
-        
+
         OrderERC20 memory order;
         index = ordersCountERC20;
 
+        order.owner      = msg.sender;
         order.price      = price;
         order.amount     = amount;
         order.tokenId    = tokenId;
@@ -76,6 +86,17 @@ contract Exchange is ExchangeInterface, Roles {
         ordersCountERC20++;
         
         emit CreateOrederERC20(price, amount, tokenId, expireDate);
+    }
+
+    /**
+     * @dev Fill ERC20 oreder.
+     * @param orderId uint The order id
+     */
+    function fillOrederERC20(uint orderId) external payable isActive fillOrder(orderId) returns(bool) {
+        ordersERC20[orderId].owner.transfer(msg.value);
+        ERC20tokens[ordersERC20[orderId].tokenId].transfer(msg.sender, ordersERC20[orderId].amount);
+        emit FillOrederERC20(orderId, msg.sender);
+        return true;
     }
 
     /**
