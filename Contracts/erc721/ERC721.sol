@@ -26,6 +26,9 @@ contract ERC721 is Context, ERC165 {
 
     // Mapping from token ID to owner
     mapping (uint256 => address) private _tokenOwner;
+    
+    // Mapping from token ID to token name
+    mapping (uint256 => string) private _tokenName;
 
     // Mapping from token ID to approved address
     mapping (uint256 => address) private _tokenApprovals;
@@ -55,6 +58,10 @@ contract ERC721 is Context, ERC165 {
     constructor () public {
         // register the supported interfaces to conform to ERC721 via ERC165
         _registerInterface(_INTERFACE_ID_ERC721);
+    }
+    
+    function tokenName(uint256 tokenId) public view returns (string memory) {
+        return _tokenName[tokenId];
     }
 
     /**
@@ -232,8 +239,8 @@ contract ERC721 is Context, ERC165 {
      * @param to The address that will own the minted token
      * @param tokenId uint256 ID of the token to be minted
      */
-    function _safeMint(address to, uint256 tokenId) internal {
-        _safeMint(to, tokenId, "");
+    function _safeMint(address to, uint256 tokenId, string memory tokenName) internal {
+        _safeMint(to, tokenId, tokenName, "");
     }
 
     /**
@@ -247,8 +254,8 @@ contract ERC721 is Context, ERC165 {
      * @param tokenId uint256 ID of the token to be minted
      * @param _data bytes data to send along with a safe transfer check
      */
-    function _safeMint(address to, uint256 tokenId, bytes memory _data) internal {
-        _mint(to, tokenId);
+    function _safeMint(address to, uint256 tokenId, string memory tokenName, bytes memory _data) internal {
+        _mint(to, tokenId, tokenName);
         require(_checkOnERC721Received(address(0), to, tokenId, _data), "ERC721: transfer to non ERC721Receiver implementer");
     }
 
@@ -258,11 +265,12 @@ contract ERC721 is Context, ERC165 {
      * @param to The address that will own the minted token
      * @param tokenId uint256 ID of the token to be minted
      */
-    function _mint(address to, uint256 tokenId) internal {
+    function _mint(address to, uint256 tokenId, string memory tokenName) internal {
         require(to != address(0), "ERC721: mint to the zero address");
         require(!_exists(tokenId), "ERC721: token already minted");
 
         _tokenOwner[tokenId] = to;
+        _tokenName[tokenId] = tokenName;
         _ownedTokensCount[to].increment();
 
         emit Transfer(address(0), to, tokenId);

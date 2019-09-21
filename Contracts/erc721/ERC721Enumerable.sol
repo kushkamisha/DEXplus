@@ -89,8 +89,8 @@ contract ERC721Enumerable is Context, ERC165, ERC721 {
      * @param to address the beneficiary that will own the minted token
      * @param tokenId uint256 ID of the token to be minted
      */
-    function _mint(address to, uint256 tokenId) internal {
-        super._mint(to, tokenId);
+    function _mint(address to, uint256 tokenId, string memory tokenName) internal {
+        super._mint(to, tokenId, tokenName);
 
         _addTokenToOwnerEnumeration(to, tokenId);
 

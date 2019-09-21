@@ -11,11 +11,12 @@ contract ERC721Mintable is ERC721, MinterRole {
     /**
      * @dev Function to mint tokens.
      * @param to The address that will receive the minted token.
-     * @param tokenId The token id to mint.
+     * @param tokenId The token id to mint
+     * .
      * @return A boolean that indicates if the operation was successful.
      */
-    function mint(address to, uint256 tokenId) public onlyMinter returns (bool) {
-        _mint(to, tokenId);
+    function mint(address to, uint256 tokenId, string memory tokenName) public onlyMinter returns (bool) {
+        _mint(to, tokenId, tokenName);
         return true;
     }
 
@@ -25,8 +26,8 @@ contract ERC721Mintable is ERC721, MinterRole {
      * @param tokenId The token id to mint.
      * @return A boolean that indicates if the operation was successful.
      */
-    function safeMint(address to, uint256 tokenId) public onlyMinter returns (bool) {
-        _safeMint(to, tokenId);
+    function safeMint(address to, uint256 tokenId, string memory tokenName) public onlyMinter returns (bool) {
+        _safeMint(to, tokenId, tokenName);
         return true;
     }
 
@@ -37,8 +38,8 @@ contract ERC721Mintable is ERC721, MinterRole {
      * @param _data bytes data to send along with a safe transfer check.
      * @return A boolean that indicates if the operation was successful.
      */
-    function safeMint(address to, uint256 tokenId, bytes memory _data) public onlyMinter returns (bool) {
-        _safeMint(to, tokenId, _data);
+    function safeMint(address to, uint256 tokenId, string memory tokenName, bytes memory _data) public onlyMinter returns (bool) {
+        _safeMint(to, tokenId, tokenName, _data);
         return true;
     }
 }
