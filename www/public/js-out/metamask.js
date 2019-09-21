@@ -8257,16 +8257,16 @@ function initContract(contract) {
         '0x6d82eb95c3c3468e1815242ab375327903e5261e'.toString('hex')
     ).then(res => console.log(res))
 
-    callContract(
-        token,
-        'transfer',
-        '0x4D07e28E9EE6DC715b98f589169d7927239d7318'.toString('hex'),
-        5,
-        {
-            from: '0x6d82eB95C3c3468E1815242AB375327903E5261e',
-            gas: 500000
-        }
-    ).then(res => console.log(res))
+    // callContract(
+    //     token,
+    //     'transfer',
+    //     '0x4D07e28E9EE6DC715b98f589169d7927239d7318'.toString('hex'),
+    //     5,
+    //     {
+    //         from: '0x6d82eB95C3c3468E1815242AB375327903E5261e',
+    //         gas: 500000
+    //     }
+    // ).then(res => console.log(res))
 }
 
 /*******************************************/
