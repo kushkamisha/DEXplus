@@ -7,8 +7,6 @@ import "./Roles.sol";
  * @title Exchange interface
  */
 interface ExchangeInterface {
-    function setERC20Token(uint index, address token) external;
-    function setMainStatus(bool status) external;
     function createOrderERC20(uint price, uint amount, uint tokenId, uint expireDate) external returns(uint index);
     function createOrderERC721(uint price, uint index, uint tokenId, uint expireDate) external returns(uint);
     function fillOrederERC20(uint orderId) external payable returns(bool);
@@ -16,15 +14,20 @@ interface ExchangeInterface {
     function cancelOrederERC20(uint orderId) external returns(bool);
     function cancelOrederERC721(uint orderId) external returns(bool);
 
-    event SetERC20Token(uint index, address token);
-    event SetERC721Token(uint index, address token);    
-    event SetMainStatus(bool mainStatus);
+    function setERC20Token(uint index, address token) external;
+    function setERC721Token(uint index, address token) external;
+    function setMainStatus(bool status) external;
+
     event CreateOrederERC20(uint price, uint amount, uint tokenId, uint expireDate);
     event CreateOrederERC721(uint price, uint index, uint tokenId, uint expireDate);
     event FillOrederERC20(uint orederId, address buyer);
     event FillOrederERC721(uint orederId, address buyer);
     event CancelOrederERC20(uint orederId);
     event CancelOrederERC721(uint orederId);
+
+    event SetERC20Token(uint index, address token);
+    event SetERC721Token(uint index, address token);
+    event SetMainStatus(bool mainStatus);
 }
 
 
