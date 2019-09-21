@@ -9,13 +9,16 @@ import "./Roles.sol";
 interface ExchangeInterface {
     function setERC20Token(uint index, address token) external;
     function setMainStatus(bool status) external;
-    function createOrederERC20(uint price, uint amount, uint tokenId, uint expireDate) external returns(uint index);
+    function createOrderERC20(uint price, uint amount, uint tokenId, uint expireDate) external returns(uint index);
+    function createOrderERC721(uint price, uint index, uint tokenId, uint expireDate) external returns(uint);
     function fillOrederERC20(uint orderId) external payable returns(bool);
+    function cancelOrederERC20(uint orderId) external returns(bool);
 
     event SetERC20Token(uint index, address token);
     event SetERC721Token(uint index, address token);    
     event SetMainStatus(bool mainStatus);
     event CreateOrederERC20(uint price, uint amount, uint tokenId, uint expireDate);
+    event CreateOrederERC721(uint price, uint index, uint tokenId, uint expireDate);
     event FillOrederERC20(uint orederId, address buyer);
     event CancelOrederERC20(uint orederId);
 }
@@ -57,11 +60,23 @@ contract Exchange is ExchangeInterface, Roles {
         bool status;
     }
 
+    struct OrderERC721 {
+        address payable owner;
+        uint price;
+        uint index;
+        uint tokenId;
+        uint expireDate;
+        bool status;
+    }
+
     mapping (uint => ERC20Interface) public ERC20tokens;
     mapping (uint => ERC721Interface) public ERC721tokens;
 
     mapping (uint => OrderERC20) public ordersERC20;
     uint ordersCountERC20;
+
+    mapping (uint => OrderERC721) public ordersERC721;
+    uint ordersCountERC721;
 
     constructor() public {
         mainStatus = true;
@@ -73,8 +88,14 @@ contract Exchange is ExchangeInterface, Roles {
         _;
     }
 
-    modifier createOrder(uint amount, uint tokenId, uint expireDate) {
+    modifier checkOrderERC20(uint amount, uint tokenId, uint expireDate) {
         require(ERC20tokens[tokenId].allowance(msg.sender, address(this)) >= amount, "Not enought allowance.");
+        require(expireDate > now, "Wrong expire date.");
+        _;
+    }
+
+    modifier checkOrderERC721(uint index, uint tokenId, uint expireDate) {
+        require(ERC721tokens[tokenId].getApproved(index) == address(this), "Can't get allowance.");
         require(expireDate > now, "Wrong expire date.");
         _;
     }
@@ -99,7 +120,7 @@ contract Exchange is ExchangeInterface, Roles {
      * @param tokenId uint The token id
      * @param expireDate uint The expire date in timestamp
      */
-    function createOrederERC20(uint price, uint amount, uint tokenId, uint expireDate) external isActive createOrder(amount, tokenId, expireDate) returns(uint index) {
+    function createOrderERC20(uint price, uint amount, uint tokenId, uint expireDate) external isActive checkOrderERC20(amount, tokenId, expireDate) returns(uint index) {
         ERC20tokens[tokenId].transferFrom(msg.sender, address(this), amount);
 
         OrderERC20 memory order;
@@ -116,6 +137,33 @@ contract Exchange is ExchangeInterface, Roles {
         ordersCountERC20++;
         
         emit CreateOrederERC20(price, amount, tokenId, expireDate);
+    }
+
+    /**
+     * @dev Create ERC721 oreder.
+     * @param price uint The ETH price
+     * @param index uint The token index
+     * @param tokenId uint The token id
+     * @param expireDate uint The expire date in timestamp
+     */
+    function createOrderERC721(uint price, uint index, uint tokenId, uint expireDate) external isActive checkOrderERC721(index, tokenId, expireDate) returns(uint) {
+        ERC721tokens[tokenId].transferFrom(msg.sender, address(this), index);
+
+        OrderERC721 memory order;
+        uint id = ordersCountERC20;
+
+        order.owner      = msg.sender;
+        order.price      = price;
+        order.index      = index;
+        order.tokenId    = tokenId;
+        order.expireDate = expireDate;
+        order.status     = true;
+
+        ordersERC721[id] = order;
+        ordersCountERC721++;
+        
+        emit CreateOrederERC721(price, index, tokenId, expireDate);
+        return id;
     }
 
     /**
