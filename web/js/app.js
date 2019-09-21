@@ -11,7 +11,7 @@ function callContract() {
 
 $(document).ready(async () => {
 
-    await ethereum.enable()
+    // await ethereum.enable()
 
     console.log(web3.eth.accounts)
     callContract()
