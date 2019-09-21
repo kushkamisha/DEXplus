@@ -33,12 +33,16 @@
         </div>
       </form>
     </div>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="bootstrap/js/jquery.min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
-    <script src="https://cdn.rawgit.com/ethereum/web3.js/develop/dist/web3.js"></script>
-    <script src="js/abi.js"></script>
-    <script src="js/app.js"></script>
+    <script>
+      window.onload = function() {
+        window.web3.enable()
+        console.log(`Accounts: ${web3.eth.accounts}`)
+      }
+    </script>
   </body>
 </html>
