@@ -1,7 +1,6 @@
 pragma solidity ^0.5.0;
 
 import "./Roles.sol";
-import "./ERC20.sol";
 
 
 /**
@@ -20,6 +19,20 @@ interface ExchangeInterface {
     event CancelOrederERC20(uint orederId);
 }
 
+
+interface ERC20Interface {
+    function balanceOf(address wallet) external view returns (uint amount);
+    function allowance(address wallet, address spender) external view returns (uint amount);
+    function transfer(address to, uint amount) external returns (bool);
+    function approve(address spender, uint amount) external returns (bool);
+    function increaseApproval(address spender, uint amount) external returns (bool);
+    function decreaseApproval(address spender, uint amount) external returns (bool);
+    function transferFrom(address from, address to, uint amount) external returns (bool);
+
+    event Transfer(address indexed from, address indexed to, uint amount);
+    event Burn(address indexed from, uint amount);
+    event Approval(address indexed wallet, address indexed spender, uint amount);
+}
 
 /**
  * @title Exchange
