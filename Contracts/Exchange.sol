@@ -12,6 +12,7 @@ interface ExchangeInterface {
     function createOrderERC20(uint price, uint amount, uint tokenId, uint expireDate) external returns(uint index);
     function createOrderERC721(uint price, uint index, uint tokenId, uint expireDate) external returns(uint);
     function fillOrederERC20(uint orderId) external payable returns(bool);
+    function fillOrederERC721(uint orderId) external payable returns(bool);
     function cancelOrederERC20(uint orderId) external returns(bool);
 
     event SetERC20Token(uint index, address token);
@@ -20,6 +21,7 @@ interface ExchangeInterface {
     event CreateOrederERC20(uint price, uint amount, uint tokenId, uint expireDate);
     event CreateOrederERC721(uint price, uint index, uint tokenId, uint expireDate);
     event FillOrederERC20(uint orederId, address buyer);
+    event FillOrederERC721(uint orederId, address buyer);
     event CancelOrederERC20(uint orederId);
 }
 
@@ -100,10 +102,17 @@ contract Exchange is ExchangeInterface, Roles {
         _;
     }
 
-    modifier fillOrder(uint orderId) {
+    modifier fillOrderERC20(uint orderId) {
         require(ordersERC20[orderId].status, "Wrong order status.");
         require(ordersERC20[orderId].price == msg.value, "Not enought funds.");
         require(ordersERC20[orderId].expireDate > now, "Order is expired.");
+        _;
+    }
+
+    modifier fillOrderERC721(uint orderId) {
+        require(ordersERC721[orderId].status, "Wrong order status.");
+        require(ordersERC721[orderId].price == msg.value, "Not enought funds.");
+        require(ordersERC721[orderId].expireDate > now, "Order is expired.");
         _;
     }
 
@@ -170,12 +179,25 @@ contract Exchange is ExchangeInterface, Roles {
      * @dev Fill ERC20 oreder.
      * @param orderId uint The order id
      */
-    function fillOrederERC20(uint orderId) external payable isActive fillOrder(orderId) returns(bool) {
+    function fillOrederERC20(uint orderId) external payable isActive fillOrderERC20(orderId) returns(bool) {
         ordersERC20[orderId].status = false;
         ordersERC20[orderId].owner.transfer(msg.value);
         ERC20tokens[ordersERC20[orderId].tokenId].transfer(msg.sender, ordersERC20[orderId].amount);
 
         emit FillOrederERC20(orderId, msg.sender);
+        return true;
+    }
+
+    /**
+     * @dev Fill ERC721 oreder.
+     * @param orderId uint The order id
+     */
+    function fillOrederERC721(uint orderId) external payable isActive fillOrderERC721(orderId) returns(bool) {
+        ordersERC721[orderId].status = false;
+        ordersERC721[orderId].owner.transfer(msg.value);
+        ERC721tokens[ordersERC721[orderId].tokenId].transferFrom(address(this), msg.sender, ordersERC721[orderId].index);
+
+        emit FillOrederERC721(orderId, msg.sender);
         return true;
     }
 
