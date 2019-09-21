@@ -13,6 +13,7 @@ interface ExchangeInterface {
     function fillOrederERC20(uint orderId) external payable returns(bool);
 
     event SetERC20Token(uint index, address token);
+    event SetERC721Token(uint index, address token);    
     event SetMainStatus(bool mainStatus);
     event CreateOrederERC20(uint price, uint amount, uint tokenId, uint expireDate);
     event FillOrederERC20(uint orederId, address buyer);
@@ -20,19 +21,24 @@ interface ExchangeInterface {
 }
 
 
+/**
+ * @title ERC20 token interface
+ */
 interface ERC20Interface {
-    function balanceOf(address wallet) external view returns (uint amount);
     function allowance(address wallet, address spender) external view returns (uint amount);
     function transfer(address to, uint amount) external returns (bool);
-    function approve(address spender, uint amount) external returns (bool);
-    function increaseApproval(address spender, uint amount) external returns (bool);
-    function decreaseApproval(address spender, uint amount) external returns (bool);
     function transferFrom(address from, address to, uint amount) external returns (bool);
-
-    event Transfer(address indexed from, address indexed to, uint amount);
-    event Burn(address indexed from, uint amount);
-    event Approval(address indexed wallet, address indexed spender, uint amount);
 }
+
+
+/**
+ * @title ERC721 token interface
+ */
+interface ERC721Interface {
+    function getApproved(uint256 tokenId) external view returns (address);
+    function transferFrom(address from, address to, uint256 tokenId) external;
+}
+
 
 /**
  * @title Exchange
@@ -52,6 +58,7 @@ contract Exchange is ExchangeInterface, Roles {
     }
 
     mapping (uint => ERC20Interface) public ERC20tokens;
+    mapping (uint => ERC721Interface) public ERC721tokens;
 
     mapping (uint => OrderERC20) public ordersERC20;
     uint ordersCountERC20;
@@ -143,6 +150,16 @@ contract Exchange is ExchangeInterface, Roles {
     function setERC20Token(uint index, address token) external onlyOwner {
         ERC20tokens[index] = ERC20Interface(token);
         emit SetERC20Token(index, token);
+    }
+
+    /**
+     * @dev Add ERC721 token.
+     * @param index uint The token index
+     * @param token address The token contract address
+     */
+    function setERC721Token(uint index, address token) external onlyOwner {
+        ERC721tokens[index] = ERC721Interface(token);
+        emit SetERC721Token(index, token);
     }
 
     /**
