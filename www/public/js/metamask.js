@@ -22,11 +22,9 @@ const startApp = () => {
     loadExchangeOrders()
 }
 
-window.fillOrder = (orderId, price) => {
-    const value = web3.toWei(price, "ether");
+window.fillOrder = (orderId, value) =>
     callContract(platform, 'fillERC721order', orderId, { from: addr, gas: 5000000, value })
         .then(console.log)
-}
 
 const loadUserInfo = () => {
     addr = web3.eth.accounts[0]
