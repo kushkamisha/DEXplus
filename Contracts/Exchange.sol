@@ -209,7 +209,7 @@ contract Exchange is ExchangeInterface, Roles {
         ERC721tokens[tokenId].transferFrom(msg.sender, address(this), index);
 
         OrderERC721 memory order;
-        id = ordersCountERC20;
+        id = ordersCountERC721;
 
         order.orderId    = id;
         order.owner      = msg.sender;
