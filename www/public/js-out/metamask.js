@@ -8246,7 +8246,7 @@ function startApp(web3) {
     initAllContracts(contract)
 
     loadUserInfo()
-
+    loadExchangeOrders()
     // executeContractMethods(silence)
 
     // callContract(kittens, 'name').then(res => console.log(res))
@@ -8305,13 +8305,43 @@ const loadUserInfo = () => {
     
 }
 
+const loadExchangeOrders = () => {
+    (async () => {
+        let id = 0
+        let order = {}
+        order.owner = '0x123'
+        while (true) {
+            order = await callContract(platform, 'ordersERC721', id)
+            if (order.owner === '0x0000000000000000000000000000000000000000') break
+            if (!order.status) continue
+
+            $('#ordersTable').append(`
+            <tr>
+                <th scope="row"></th>
+                <td>ERC721</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>`)
+            $('#ordersTable > tr > th').text(`${id}`)
+            $('#ordersTable td:nth-child(3)').text(`${order.index.toNumber()}`)
+            $('#ordersTable td:nth-child(4)').text(`${order.owner}`)
+            $('#ordersTable td:nth-child(5)').text(`${order.price.toNumber()}`)
+            // $('#ordersTable td:nth-child(6)').text(`${order.expireDate.toNumber()}`)
+            
+            id++
+        }
+    })()
+}
+
 const callContract = async (contract, method, ...params) => await contract[method](...params)
 
 /*******************************************/
 
 $('#place-order').click(() => {
     console.log(ownedKittens)
-    const price = $('#erc721-price').val()
+    const price = `${$('#erc721-price').val()}`
     const kittenName = $('#erc721-name').val()
     const expireDate = $('#erc721-expireDate').val()
     const expireTime = $('#erc721-expireTime').val()
@@ -8319,27 +8349,25 @@ $('#place-order').click(() => {
     const expire = '1570000000'
 
     const kitten = ownedKittens.filter(obj => obj.kittenName === kittenName)
-    // const kittenId = kitten[0].id
+    const kittenId = kitten[0].id
 
-    console.log(price)
+    callContract(kittens, 'approve', platformAddress.toString('hex'), kittenId,
+        { from: addr, gas: 5000000 }).then(res => {
+            console.log({ res })
 
-    // callContract(kittens, 'approve', platformAddress.toString('hex'), kittenId,
-    //     { from: addr, gas: 5000000 }).then(res => {
-    //         console.log({ res })
-
-    //         callContract(
-    //             platform,
-    //             'createERC721order',
-    //             price,
-    //             kittenId,
-    //             0,
-    //             expire,
-    //             {
-    //                 from: addr,
-    //                 gas: 5000000
-    //             }
-    //         ).then(res => console.log(res))
-    //     })
+            callContract(
+                platform,
+                'createERC721order',
+                price,
+                kittenId,
+                0,
+                expire,
+                {
+                    from: addr,
+                    gas: 5000000
+                }
+            ).then(res => console.log(res))
+        })
 })
 
 /*******************************************/

@@ -14,7 +14,7 @@ function startApp(web3) {
     initAllContracts(contract)
 
     loadUserInfo()
-
+    loadExchangeOrders()
     // executeContractMethods(silence)
 
     // callContract(kittens, 'name').then(res => console.log(res))
@@ -71,6 +71,36 @@ const loadUserInfo = () => {
             }
         })
     
+}
+
+const loadExchangeOrders = () => {
+    (async () => {
+        let id = 0
+        let order = {}
+        order.owner = '0x123'
+        while (true) {
+            order = await callContract(platform, 'ordersERC721', id)
+            if (order.owner === '0x0000000000000000000000000000000000000000') break
+            if (!order.status) continue
+
+            $('#ordersTable').append(`
+            <tr>
+                <th scope="row"></th>
+                <td>ERC721</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>`)
+            $('#ordersTable > tr > th').text(`${id}`)
+            $('#ordersTable td:nth-child(3)').text(`${order.index.toNumber()}`)
+            $('#ordersTable td:nth-child(4)').text(`${order.owner}`)
+            $('#ordersTable td:nth-child(5)').text(`${order.price.toNumber()}`)
+            // $('#ordersTable td:nth-child(6)').text(`${order.expireDate.toNumber()}`)
+            
+            id++
+        }
+    })()
 }
 
 const callContract = async (contract, method, ...params) => await contract[method](...params)
