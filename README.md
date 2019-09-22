@@ -1,5 +1,5 @@
 # DEXpul
-v0.6.0
+v0.7.0
 
 Decentralized exchange for Ethereum and tokens implemented as extension for Chromium.
 

@@ -22,6 +22,12 @@ const startApp = () => {
     loadExchangeOrders()
 }
 
+window.fillOrder = (orderId, price) => {
+    const value = web3.toWei(price, "ether");
+    callContract(platform, 'fillERC721order', orderId, { from: addr, gas: 5000000, value })
+        .then(console.log)
+}
+
 const loadUserInfo = () => {
     addr = web3.eth.accounts[0]
 
@@ -77,7 +83,8 @@ const loadExchangeOrders = async() => {
                 <td>${index}</td>
                 <td>${owner}</td>
                 <td>${price / 1e18}</td>
-                <td>${new Date(expireDate * 1000)}</td>
+                <td>${(new Date(expireDate * 1000)).toString().slice(0, 24)}</td>
+                <td><button type="button" class="btn btn-primary" onclick="window.fillOrder(${orderId}, ${price})">Fill an order</button></td>
             </tr>`)
     }
 }
@@ -93,7 +100,7 @@ $('#place-order').click(() => {
     const expireDate = $('#erc721-expireDate').val()
     const expireTime = $('#erc721-expireTime').val()
 
-    const expire = '1570000000'
+    const expire = new Date(`${expireDate}T${expireTime}:00`).getTime() / 1000
 
     const kitten = ownedKittens.filter(obj => obj.kittenName === kittenName)
     const kittenId = kitten[0].id
@@ -118,15 +125,6 @@ $('#place-order').click(() => {
                 }
             ).then(res => console.log(res))
         })
-})
-
-$('#fill-order-button').click(() => {
-    const price = $('#fill-order-price').val()
-    const value = web3.toWei(price, "ether");
-    const orderId = $('#fill-order-id').val()
-
-    callContract(platform, 'fillERC721order', orderId, { from: addr, gas: 5000000, value })
-        .then(console.log)
 })
 
 /*******************************************/
