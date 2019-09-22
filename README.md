@@ -1,5 +1,5 @@
 # DEXpul
-v0.5.0
+v0.6.0
 
 Decentralized exchange for Ethereum and tokens implemented as extension for Chromium.
 
@@ -10,4 +10,4 @@ Made on Ropsten test network
 | ------------- | ------------------------------------------ |
 | Silence token | 0x0442583d542A24ec73d55846F2164d6311934bA7 |
 | CryptoKittens | 0xdf2C36511ed89B2426e47315AC32838f2172AC3d |
-| Exchange      | 0xE866Cb9dA36D40a551e98a52Dec1BA314FD3fd39 |
+| Exchange      | 0xb113c3DA613c2a45A41B802e617E58f232934607 |
