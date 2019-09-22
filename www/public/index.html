@@ -12,29 +12,74 @@
     <title>DEX+</title>
 </head>
 
-<body>
-    <div class="container">
-        <center><h1 class="mb-5 mt-5 h1">Dex+</h1></center>
+<body class="container">
+    <center>
+        <h1 class="mb-5 mt-5 h1">Dex+</h1>
+    </center>
 
-        <h3 class="h3">Place your order</h3>
-        <form>
-            <div class="form-group">
-                <label for="price">Price</label>
-                <input type="number" class="form-control" id="price" placeholder="Enter your price">
+    <div>Address: <span id="address"></span></div>
+    <div>ETH Balance: <span id="eth-balance"></span></div>
+    <div>ERC20 Balance: <span id="erc20-balance"></span><span id="erc20-symbol"></span></div>
+    <div class="mb-3">
+        ERC721 Balance: <span id="erc721-balance"></span>
+    </div>
+
+    <div id="accordion">
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+                        aria-controls="collapseOne">
+                        Place an order
+                    </button>
+                </h5>
             </div>
-            <div class="form-group">
-                <label for="amount">Amount</label>
-                <input type="number" class="form-control" id="amount" placeholder="Enter your amount">
+    
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body">
+                    <!-- <div class="container"> -->
+                        <form>
+                            <div class="form-group">
+                                <label for="price">Price</label>
+                                <input type="number" class="form-control" id="price" placeholder="Enter your price">
+                            </div>
+                            <div class="form-group">
+                                <label for="amount">Amount</label>
+                                <input type="number" class="form-control" id="amount" placeholder="Enter your amount">
+                            </div>
+                            <div class="form-group">
+                                <label for="token">Token</label>
+                                <input type="text" class="form-control" id="token" placeholder="Enter your token">
+                            </div>
+                            <div class="form-group">
+                                <label for="expiry">Expiry Day</label>
+                                <input type="date" class="form-control" id="expiry" placeholder="Expiration date">
+                            </div>
+                        </form>
+                    <!-- </div> -->
+                </div>
             </div>
-            <div class="form-group">
-                <label for="token">Token</label>
-                <input type="text" class="form-control" id="token" placeholder="Enter your token">
+        </div>
+        <div class="card">
+            <div class="card-header" id="headingTwo">
+                <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo"
+                        aria-expanded="false" aria-controls="collapseTwo">
+                        Fill an order
+                    </button>
+                </h5>
             </div>
-            <div class="form-group">
-                <label for="expiry">Expiry Day</label>
-                <input type="date" class="form-control" id="expiry" placeholder="Expiration date">
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                <div class="card-body">
+                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf
+                    moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
+                    Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda
+                    shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea
+                    proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim
+                    aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                </div>
             </div>
-        </form>
+        </div>
     </div>
 
     <!-- Optional JavaScript -->
