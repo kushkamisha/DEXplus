@@ -109,13 +109,11 @@ $('#place-order').click(() => {
 })
 
 $('#fill-order-button').click(() => {
-    console.log('sdsdsd')
-
     const price = $('#fill-order-price').val()
     const value = web3.toWei(price, "ether");
     const orderId = $('#fill-order-id').val()
 
-    callContract(platform, 'fillERC721order', platformAddress, orderId, { from: addr, gas: 5000000, value })
+    callContract(platform, 'fillERC721order', orderId, { from: addr, gas: 5000000, value })
         .then(console.log)
 })
 
