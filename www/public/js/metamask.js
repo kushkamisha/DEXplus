@@ -22,6 +22,12 @@ const startApp = () => {
     loadExchangeOrders()
 }
 
+window.fillOrder = (orderId, price) => {
+    const value = web3.toWei(price, "ether");
+    callContract(platform, 'fillERC721order', orderId, { from: addr, gas: 5000000, value })
+        .then(console.log)
+}
+
 const loadUserInfo = () => {
     addr = web3.eth.accounts[0]
 
@@ -78,6 +84,7 @@ const loadExchangeOrders = async() => {
                 <td>${owner}</td>
                 <td>${price / 1e18}</td>
                 <td>${new Date(expireDate * 1000)}</td>
+                <td><button type="button" class="btn mt-5 btn-primary btn-block" onclick="window.fillOrder(${orderId}, ${price})">Fill an order</button><td>
             </tr>`)
     }
 }
@@ -118,15 +125,6 @@ $('#place-order').click(() => {
                 }
             ).then(res => console.log(res))
         })
-})
-
-$('#fill-order-button').click(() => {
-    const price = $('#fill-order-price').val()
-    const value = web3.toWei(price, "ether");
-    const orderId = $('#fill-order-id').val()
-
-    callContract(platform, 'fillERC721order', orderId, { from: addr, gas: 5000000, value })
-        .then(console.log)
 })
 
 /*******************************************/
