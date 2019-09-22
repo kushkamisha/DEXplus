@@ -1,9 +1,9 @@
 const Eth = require('ethjs-query')
 const EthContract = require('ethjs-contract')
 
-const platformData = require('./platform');
-const erc721Data = require('./erc721');
-const erc20Data = require('./erc20');
+const platformData = require('../data/platform')
+const erc721Data = require('../data/erc721')
+const erc20Data = require('../data/erc20')
 
 const initContract = (contract, abi, address) => contract(abi).at(address)
 
@@ -22,11 +22,9 @@ const startApp = () => {
     loadExchangeOrders()
 }
 
-window.fillOrder = (orderId, price) => {
-    const value = web3.toWei(price, "ether");
+window.fillOrder = (orderId, value) =>
     callContract(platform, 'fillERC721order', orderId, { from: addr, gas: 5000000, value })
         .then(console.log)
-}
 
 const loadUserInfo = () => {
     addr = web3.eth.accounts[0]
@@ -53,7 +51,7 @@ const loadUserInfo = () => {
                 callContract(kittens, 'tokenOfOwnerByIndex', addr.toString('hex'), i)
                     .then(res => res[0].toNumber())
                     .then(id => {
-                         callContract(kittens, 'tokenName', `${id}`)
+                        callContract(kittens, 'tokenName', `${id}`)
                             .then(res => {
                                 const kittenName = res[0].toString()
                                 ownedKittens.push({ id, kittenName })
@@ -63,10 +61,10 @@ const loadUserInfo = () => {
                     })
             }
         })
-    
+
 }
 
-const loadExchangeOrders = async() => {
+const loadExchangeOrders = async () => {
     const count = (await callContract(platform, 'ordersCountERC721'))[0].toNumber()
 
     const promices = [];
@@ -75,12 +73,13 @@ const loadExchangeOrders = async() => {
 
     for (const order of orders) {
         const { orderId, index, owner, price, expireDate } = order
+        const name = (await callContract(kittens, 'tokenName', index))[0];
 
         $('#ordersTable').append(`
             <tr>
                 <th scope="row">${orderId}</th>
                 <td>CryptoKittens</td>
-                <td>${index}</td>
+                <td>${name}</td>
                 <td>${owner}</td>
                 <td>${price / 1e18}</td>
                 <td>${(new Date(expireDate * 1000)).toString().slice(0, 24)}</td>
@@ -106,7 +105,7 @@ $('#place-order').click(() => {
     const kittenId = kitten[0].id
 
     console.log('approve', platformData.address.toString('hex'), kittenId,
-    { from: addr, gas: 5000000 })
+        { from: addr, gas: 5000000 })
 
     callContract(kittens, 'approve', platformData.address.toString('hex'), kittenId,
         { from: addr, gas: 5000000 }).then(res => {
