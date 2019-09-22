@@ -17,12 +17,26 @@
         <h1 class="mb-5 mt-5 h1">Dex+</h1>
     </center>
 
-    <div>Address: <span id="address"></span></div>
-    <div>ETH Balance: <span id="eth-balance"></span></div>
-    <div>ERC20 Balance: <span id="erc20-balance"></span><span id="erc20-symbol"></span></div>
-    <div class="mb-3">
-        ERC721 Balance: <span id="erc721-balance"></span>
-    </div>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>Address</td>
+                    <td id="address"></td>
+                </tr>
+                <tr>
+                    <td>ETH Balance</td>
+                    <td id="eth-balance"></td>
+                </tr>
+                <tr>
+                    <td>ERC20 Balance</td>
+                    <td><span id="erc20-balance"></span><span id="erc20-symbol"></span></td>
+                </tr>
+                <tr>
+                    <td>ERC721 Balance</td>
+                    <td id="erc721-balance"></td>
+                </tr>
+            </tbody>
+        </table>
 
     <div id="accordion">
         <div class="card">
@@ -41,20 +55,19 @@
                         <form>
                             <div class="form-group">
                                 <label for="price">Price</label>
-                                <input type="number" class="form-control" id="price" placeholder="Enter your price">
+                                <input type="number" class="form-control" id="erc721-price" placeholder="Enter your price (ETH)">
                             </div>
                             <div class="form-group">
-                                <label for="amount">Amount</label>
-                                <input type="number" class="form-control" id="amount" placeholder="Enter your amount">
+                                <label for="erc721-name">Token Name</label>
+                                <input type="text" class="form-control" id="erc721-name" placeholder="Enter the name of your kitty">
                             </div>
                             <div class="form-group">
-                                <label for="token">Token</label>
-                                <input type="text" class="form-control" id="token" placeholder="Enter your token">
+                                <label for="expire">Expiration Date & Time (1570000000)</label>
+                                <input type="date" value="2020-01-01" class="form-control" id="erc721-expireDate" placeholder="Expiration date">
+                                <input type="time" value="13:30" class="form-control" id="erc721-expireTime" placeholder="Expiration time">
                             </div>
-                            <div class="form-group">
-                                <label for="expiry">Expiry Day</label>
-                                <input type="date" class="form-control" id="expiry" placeholder="Expiration date">
-                            </div>
+                            
+                            <button type="button" id="place-order" class="btn mt-5 btn-primary btn-block">Create an order</button>
                         </form>
                     <!-- </div> -->
                 </div>
