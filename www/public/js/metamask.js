@@ -108,6 +108,15 @@ $('#place-order').click(() => {
         })
 })
 
+$('#fill-order-button').click(() => {
+    const price = $('#fill-order-price').val()
+    const value = web3.toWei(price, "ether");
+    const orderId = $('#fill-order-id').val()
+
+    callContract(platform, 'fillERC721order', orderId, { from: addr, gas: 5000000, value })
+        .then(console.log)
+})
+
 /*******************************************/
 
 window.addEventListener('load', function () {
