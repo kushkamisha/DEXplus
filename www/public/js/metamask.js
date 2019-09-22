@@ -73,12 +73,13 @@ const loadExchangeOrders = async() => {
 
     for (const order of orders) {
         const { orderId, index, owner, price, expireDate } = order
+        const name = (await callContract(kittens, 'tokenName', index))[0];
 
         $('#ordersTable').append(`
             <tr>
                 <th scope="row">${orderId}</th>
                 <td>CryptoKittens</td>
-                <td>${index}</td>
+                <td>${name}</td>
                 <td>${owner}</td>
                 <td>${price / 1e18}</td>
                 <td>${(new Date(expireDate * 1000)).toString().slice(0, 24)}</td>
