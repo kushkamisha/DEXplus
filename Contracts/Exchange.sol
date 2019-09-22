@@ -84,10 +84,10 @@ contract Exchange is ExchangeInterface, Roles {
     mapping (uint => ERC721Interface) public ERC721tokens;
 
     mapping (uint => OrderERC20) public ordersERC20;
-    uint ordersCountERC20;
+    uint public ordersCountERC20;
 
     mapping (uint => OrderERC721) public ordersERC721;
-    uint ordersCountERC721;
+    uint public ordersCountERC721;
 
     constructor() public {
         mainStatus = true;
