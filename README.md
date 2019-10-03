@@ -19,11 +19,11 @@ Published in Ethereum Ropsten test network
         <h3>Token sale</h3>
         <img src="images/2 - sell.png" alt="Sell token" />
         <h3>Sell confirmation & Place an order</h3>
-        <img src="images/3 - sell confirm.png" alt="Sell confirmation"  width="50%" /><img src="images/4 - sell place an order.png" alt="Sell placing an order" width="50%" />
+        <center><img src="images/3 - sell confirm.png" alt="Sell confirmation"  width="50%" /><img src="images/4 - sell place an order.png" alt="Sell placing an order" width="50%" /></center>
         <h3>Added to order list</h3>
         <img src="images/5 - added to orders list.png" alt="Added to orders list" />
         <h3>Token purchase</h3>
-        <img src="images/6 - buy.png" alt="Buy token" width="50%" />
+        <center><img src="images/6 - buy.png" alt="Buy token" width="50%" /></center>
         <h3>Final state</h3>
         <img src="images/7 - after.png" alt="Final state" />
     </center>
