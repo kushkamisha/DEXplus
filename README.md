@@ -14,17 +14,17 @@ Published in Ethereum Ropsten test network
 
 ## DEX+ in work
 <center>
-        ### Initial state
+        <h3>Initial state</h3>
         <img src="images/1 - before.png" alt="Initial state" />
-        ### Token sale
+        <h3>Token sale</h3>
         <img src="images/2 - sell.png" alt="Sell token" />
-        ### Sell confirmation & Place an order
-        <img src="images/3 - sell confirm.png" alt="Sell confirmation" />
-        <img src="images/4 - sell place an order.png" alt="Sell placing an order" />
-        ### Added to order list
+        <h3>Sell confirmation & Place an order</h3>
+        <img src="images/3 - sell confirm.png" style="width: 50%" alt="Sell confirmation" />
+        <img src="images/4 - sell place an order.png" style="width: 50%" alt="Sell placing an order" />
+        <h3>Added to order list</h3>
         <img src="images/5 - added to orders list.png" alt="Added to orders list" />
-        ### Token purchase
-        <img src="images/6 - buy.png" alt="Buy token" />
-        ### Final state
+        <h3>Token purchase</h3>
+        <img src="images/6 - buy.png" style="width: 50%" alt="Buy token" />
+        <h3>Final state</h3>
         <img src="images/7 - after.png" alt="Final state" />
     </center>
